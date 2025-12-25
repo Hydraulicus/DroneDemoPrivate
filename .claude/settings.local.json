@@ -4,20 +4,23 @@
       "Bash(cat:*)",
       "Bash(/Users/olexii/work/CLionProjects/drone1/build/robot_vision)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(curl:*)",
+      "Bash(cmake -B build:*)",
+      "Bash(cmake --build:*)"
     ],
     "deny": [],
     "ask": []
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh",
+    "padding": 0
   },
   "defaultModel": "claude-sonnet-4-5-20250929",
   "models": {
     "planning": "claude-opus-4-20250514",
     "implementation": "claude-sonnet-4-5-20250929",
     "review": "claude-sonnet-4-5-20250929"
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "~/.claude/statusline.sh",
-    "padding": 0
   }
 }
