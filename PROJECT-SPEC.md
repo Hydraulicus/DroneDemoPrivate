@@ -76,30 +76,32 @@ Create a demonstration application showcasing a production-ready robot vision pi
 ### Component Overview
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    Application Layer                     │
-│                      (main.cpp)                          │
-└────────────────────┬────────────────────────────────────┘
-                     │
-        ┌────────────┴────────────┐
-        │                         │
-┌───────▼──────────┐    ┌────────▼─────────┐
-│  Video Pipeline  │    │   OSD Renderer   │
-│   (GStreamer)    │◄───┤    (NanoVG)      │
-└───────┬──────────┘    └────────┬─────────┘
-        │                        │
-        │                        │
-┌───────▼────────────────────────▼─────────┐
-│        Platform Abstraction Layer        │
-│  (Graphics Backend, Camera, Display)     │
-└──────────────────────────────────────────┘
-                     │
-        ┌────────────┴────────────┐
-        │                         │
-┌───────▼──────┐        ┌────────▼────────┐
-│  File System │        │  Hardware/OS    │
-│   (Storage)  │        │   (Video/GPU)   │
-└──────────────┘        └─────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                         ROBOT VISION (drone1)                        │
+│  ┌───────────────┐  ┌───────────────┐  ┌─────────────────────────┐  │
+│  │ Video Pipeline│  │ OSD Renderer  │  │   Detection Client      │  │
+│  │  (GStreamer)  │  │   (NanoVG)    │  │   (IPC to detector)     │  │
+│  └───────┬───────┘  └───────┬───────┘  └────────────┬────────────┘  │
+│          │                  │                       │               │
+│          └──────────────────┼───────────────────────┘               │
+│                             │                                       │
+│  ┌──────────────────────────▼────────────────────────────────────┐  │
+│  │              Platform Abstraction Layer                        │  │
+│  └────────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────┬───────────────────────────────────┘
+                                  │
+                    Shared Memory + Unix Socket
+                      (detector-protocol)
+                                  │
+┌─────────────────────────────────▼───────────────────────────────────┐
+│                    VISION DETECTOR (separate repo)                   │
+│  ┌───────────────┐  ┌───────────────┐  ┌─────────────────────────┐  │
+│  │  Preprocessor │  │ TFLite Engine │  │   Detection Server      │  │
+│  │ (resize/norm) │─▶│  (inference)  │─▶│   (IPC provider)        │  │
+│  └───────────────┘  └───────────────┘  └─────────────────────────┘  │
+│                                                                      │
+│  Models: tanks, APCs, artillery, military vehicles                   │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Component Responsibilities
@@ -435,21 +437,60 @@ target_link_libraries(robot_vision_demo
 - ✅ Draw basic shapes on video
 - ✅ Text rendering
 
-### Phase 4: OSD Features (Week 3) - IN PROGRESS
-- ✅ Frame counter
-- ✅ FPS display
-- ⬜ Custom graphics elements (detection boxes, crosshair)
-- ⬜ Dynamic data display (telemetry panel)
+### Phase 4: Object Detection Integration - IN PROGRESS
+**Goal**: Integrate external vision-detector service for real-time object detection
 
-### Phase 5: File Operations (Week 3)
-- ⬜ Frame saving functionality
+**Architecture**:
+- Separate `vision-detector` service (TFLite inference)
+- IPC communication via shared memory + Unix socket
+- Shared protocol library as git submodule
+
+**Tasks**:
+- ⬜ Add `detector-protocol` submodule (shared message definitions)
+- ⬜ Implement detection client (IPC communication)
+- ⬜ Receive detection results (bounding boxes, labels, confidence)
+- ⬜ OSD visualization of detections:
+  - ⬜ Draw bounding boxes around detected objects
+  - ⬜ Render class labels (tank, vehicle types)
+  - ⬜ Display confidence scores
+  - ⬜ Color coding per object class
+- ⬜ Handle connection/disconnection gracefully
+- ⬜ Frame counter and FPS display (✅ already implemented)
+
+**Detection Classes** (provided by vision-detector):
+- Military vehicles (tanks, APCs, artillery)
+- See `vision-detector` specification for full class list
+
+### Phase 5: Enhanced OSD Features
+**Goal**: Advanced overlay elements for operational use
+
+**Tasks**:
+- ⬜ Crosshair / center reference overlay
+- ⬜ Telemetry panel:
+  - ⬜ Detection count per class
+  - ⬜ Inference latency display
+  - ⬜ System resource usage
+  - ⬜ Connection status indicator
+- ⬜ Configurable OSD layout
+- ⬜ Toggle OSD elements on/off
+
+### Phase 6: File Operations
+**Goal**: Data persistence and logging
+
+**Tasks**:
+- ⬜ Frame saving functionality (with detections overlay)
+- ⬜ Detection logging (JSON format)
 - ⬜ Configuration management
-- ⬜ Logging system
+- ⬜ Session recording
 
-### Phase 6: Testing & Optimization (Week 4)
+### Phase 7: Testing & Optimization
+**Goal**: Production readiness
+
+**Tasks**:
 - ⬜ Test on macOS
 - ⬜ Test on Jetson Nano
 - ⬜ Performance profiling
+- ⬜ Latency optimization
 - ⬜ Documentation
 
 ---
@@ -462,12 +503,20 @@ target_link_libraries(robot_vision_demo
 - ⬜ Saves frames to file on command
 - ✅ Less than 50 lines of platform-specific code
 
+### Phase 4 Success (Object Detection)
+- ⬜ Connects to vision-detector service
+- ⬜ Receives detection results in real-time
+- ⬜ Displays bounding boxes with labels on detected vehicles
+- ⬜ Handles detector disconnection gracefully
+- ⬜ Detection latency: <100ms end-to-end
+
 ### Full Success
 - ⬜ All functional requirements met
 - ⬜ All non-functional requirements met
 - ✅ Clean, documented codebase
 - ⬜ Build instructions for both platforms
 - ⬜ Performance benchmarks documented
+- ⬜ Real-time vehicle detection operational
 
 ---
 
