@@ -429,28 +429,28 @@ target_link_libraries(robot_vision_demo
 - ✅ Platform-specific pipeline configuration
 - ✅ Error handling
 
-### Phase 3: Graphics Overlay (Week 2)
+### Phase 3: Graphics Overlay (Week 2) ✅ COMPLETE
 - ✅ Integrate NanoVG
 - ✅ Initialize graphics context
 - ✅ Draw basic shapes on video
 - ✅ Text rendering
 
-### Phase 4: OSD Features (Week 3)
+### Phase 4: OSD Features (Week 3) - IN PROGRESS
 - ✅ Frame counter
 - ✅ FPS display
-- ✅ Custom graphics elements
-- ✅ Dynamic data display
+- ⬜ Custom graphics elements (detection boxes, crosshair)
+- ⬜ Dynamic data display (telemetry panel)
 
 ### Phase 5: File Operations (Week 3)
-- ✅ Frame saving functionality
-- ✅ Configuration management
-- ✅ Logging system
+- ⬜ Frame saving functionality
+- ⬜ Configuration management
+- ⬜ Logging system
 
 ### Phase 6: Testing & Optimization (Week 4)
-- ✅ Test on macOS
-- ✅ Test on Jetson Nano
-- ✅ Performance profiling
-- ✅ Documentation
+- ⬜ Test on macOS
+- ⬜ Test on Jetson Nano
+- ⬜ Performance profiling
+- ⬜ Documentation
 
 ---
 
@@ -459,15 +459,15 @@ target_link_libraries(robot_vision_demo
 ### Minimum Viable Product (MVP)
 - ✅ Displays camera video in window on both platforms
 - ✅ Overlays simple graphics (rectangle + text)
-- ✅ Saves frames to file on command
+- ⬜ Saves frames to file on command
 - ✅ Less than 50 lines of platform-specific code
 
 ### Full Success
-- ✅ All functional requirements met
-- ✅ All non-functional requirements met
+- ⬜ All functional requirements met
+- ⬜ All non-functional requirements met
 - ✅ Clean, documented codebase
-- ✅ Build instructions for both platforms
-- ✅ Performance benchmarks documented
+- ⬜ Build instructions for both platforms
+- ⬜ Performance benchmarks documented
 
 ---
 

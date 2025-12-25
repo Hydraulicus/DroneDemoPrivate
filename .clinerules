@@ -14,6 +14,33 @@ This project follows **Task-Driven, Interface-First Development** with Claude Co
 
 ---
 
+## 📋 PHASE-TO-SPEC MAPPING
+
+**When working on a specific phase, read ONLY the relevant spec file:**
+
+| Phase | Spec File | Status |
+|-------|-----------|--------|
+| Phase 1: Foundation | `docs/specs/platform-abstraction.md` | ✅ Complete |
+| Phase 2: Video Pipeline | `docs/specs/video-pipeline.md` | ✅ Complete |
+| Phase 3: Graphics Overlay | `docs/specs/osd-rendering.md` | ✅ Complete |
+| Phase 4: OSD Features | `docs/specs/osd-rendering.md` | 🔄 In Progress |
+| Phase 5: File Operations | `docs/specs/file-storage.md` | ⬜ Not Started |
+| Phase 6: Testing | `docs/specs/testing.md` | ⬜ Not Started |
+
+**At session start:**
+1. User states which phase/task they're working on
+2. Claude reads ONLY the relevant spec file
+3. Keeps context minimal and focused
+
+**Example:**
+```
+User: "Let's continue with Phase 4 OSD features"
+Claude: *reads docs/specs/osd-rendering.md*
+        *proceeds with focused context*
+```
+
+---
+
 ## 🤝 CLAUDE CODE COLLABORATION PROTOCOL
 
 ### Your Role as Collaborator
