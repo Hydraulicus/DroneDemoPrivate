@@ -1293,6 +1293,81 @@ class ConfigWatcher {
 
 ---
 
+## 📏 CODE QUALITY RULES
+
+### File Size Limits
+
+| Component | Max Lines | Action if Exceeded |
+|-----------|-----------|-------------------|
+| Source file (.cpp) | 500 | Split into modules |
+| Header file (.h) | 300 | Extract interfaces |
+| Single function | 50 | Extract sub-functions |
+| Single class | 300 | Split responsibilities |
+
+### Code Duplication Prevention
+
+**DRY Principle Enforcement:**
+
+1. **Platform-independent code** - extract to `src/utils/` or `src/core/`
+2. **Shared includes** - create wrapper headers (e.g., `core/opengl.h`)
+3. **Common validation logic** - move to free functions in header files
+4. **Repeated patterns** - create templates or base classes
+
+**When you see duplication:**
+```
+IF same code appears in 2+ files:
+  → Extract to utility/helper
+IF same logic in platform implementations:
+  → Move to base class OR free function in platform.h
+IF same include pattern:
+  → Create wrapper header
+```
+
+### Utility Extraction Candidates
+
+**Extract to `src/utils/` when code is:**
+- Used by 3+ components
+- Has no dependencies on application logic
+- Could be unit tested in isolation
+- Generic enough for reuse
+
+**Standard utilities to maintain:**
+| Utility | Purpose |
+|---------|---------|
+| `utils/opengl.h` | Platform-agnostic OpenGL includes |
+| `utils/fps_counter.h` | Frame rate measurement |
+| `utils/gstreamer_init.h` | RAII wrapper for GStreamer lifecycle |
+| `utils/resolution.h` | Common resolution validation |
+
+### Code Organization Checks
+
+**Before completing any task, verify:**
+- [ ] No function exceeds 50 lines
+- [ ] No file exceeds 500 lines
+- [ ] No code duplicated across files
+- [ ] Platform-specific code only in `platform/` directory
+- [ ] Utility code properly extracted to `utils/`
+- [ ] Common includes wrapped in dedicated headers
+
+### Refactoring Triggers
+
+**Immediate refactoring required when:**
+- Same code block appears in 2+ files
+- Function exceeds 50 lines
+- File exceeds 500 lines
+- Cyclomatic complexity > 10
+- More than 3 levels of nesting
+
+**Refactoring protocol:**
+1. Write/verify tests for current behavior
+2. Extract duplicated code to utility
+3. Run tests to verify no regression
+4. Update all call sites
+5. Remove old duplicated code
+6. Commit refactoring separately from features
+
+---
+
 ## 🎯 FINAL REMINDERS
 
 ### Every Time Claude Code Responds
