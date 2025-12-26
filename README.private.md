@@ -4,6 +4,58 @@ Personal reference for repository management and development commands.
 
 ---
 
+## Quick Start - Both Services
+
+```bash
+# Terminal 1: Start vision-detector
+cd /Users/olexii/work/CLionProjects/vision-detector
+./build/vision_detector -m private/models/custom_model_lite_tanks/detect.tflite -l private/models/custom_model_lite_tanks/labelmap.txt
+
+# Terminal 2: Start robot_vision
+cd /Users/olexii/work/CLionProjects/drone1
+./build/robot_vision
+```
+
+---
+
+## Build Commands
+
+### Robot Vision (drone1)
+
+```bash
+# Full build
+cd /Users/olexii/work/CLionProjects/drone1
+cmake -B build && cmake --build build
+
+# Run
+./build/robot_vision
+```
+
+### Vision Detector
+
+```bash
+# Build with TFLite
+cd /Users/olexii/work/CLionProjects/vision-detector
+cmake -B build -DUSE_TFLITE=ON && cmake --build build
+
+# Build without TFLite (for testing IPC only)
+cmake -B build -DUSE_TFLITE=OFF && cmake --build build
+
+# Run
+./build/vision_detector -m private/models/custom_model_lite_tanks/detect.tflite -l private/models/custom_model_lite_tanks/labelmap.txt
+```
+
+### Quick Rebuild Aliases
+
+Add to `~/.zshrc` or `~/.bashrc`:
+
+```bash
+alias rb='cd /Users/olexii/work/CLionProjects/drone1 && cmake --build build && ./build/robot_vision'
+alias vd='cd /Users/olexii/work/CLionProjects/vision-detector && cmake --build build && ./build/vision_detector -m private/models/custom_model_lite_tanks/detect.tflite -l private/models/custom_model_lite_tanks/labelmap.txt'
+```
+
+---
+
 ## Repository Commands
 
 ### Public Repo (DroneDemo)
@@ -38,32 +90,22 @@ git commit -m "Your message"
 git push
 ```
 
+### Vision Detector Repo
+
+```bash
+cd /Users/olexii/work/CLionProjects/vision-detector
+git pull
+git add .
+git commit -m "Your message"
+git push
+```
+
 ### Both Repos - Quick Sync
 
 ```bash
 # Push both repos at once
 cd /Users/olexii/work/CLionProjects/drone1/private && git add . && git commit -m "Update specs" && git push && cd .. && git add . && git commit -m "Sync" && git push
 ```
-
----
-
-## Build & Run
-
-### One-Line Build and Run
-
-```bash
-cd /Users/olexii/work/CLionProjects/drone1 && cmake -B build && cmake --build build && ./build/robot_vision
-```
-
-### Quick Rebuild Alias
-
-Add to `~/.zshrc` or `~/.bashrc`:
-
-```bash
-alias rb='cmake --build build && ./build/robot_vision'
-```
-
-Then just type `rb` in project directory to rebuild and run.
 
 ---
 
@@ -98,11 +140,29 @@ Then just type `rb` in project directory to rebuild and run.
 ## Project Phases
 
 - [x] Phase 1: Foundation - Platform abstraction, GStreamer init
-- [ ] Phase 2: Video Pipeline - Camera capture, GLFW window, display
-- [ ] Phase 3: Graphics Overlay - NanoVG integration
-- [ ] Phase 4: OSD Features - Frame counter, FPS, telemetry
+- [x] Phase 2: Video Pipeline - Camera capture, GLFW window, display
+- [x] Phase 3: Graphics Overlay - NanoVG OSD implementation
+- [ ] Phase 4: Object Detection - TFLite integration, IPC communication
+  - [x] Milestone 1: IPC connection, handshake, heartbeat
+  - [ ] Milestone 2: Frame transfer and detection results
+  - [ ] Milestone 3: OSD bounding box rendering
 - [ ] Phase 5: File Operations - Frame saving, config, logging
 - [ ] Phase 6: Testing & Optimization
+
+---
+
+## Architecture
+
+```
+┌─────────────────┐         IPC          ┌──────────────────┐
+│  robot_vision   │◄───────────────────►│  vision_detector  │
+│  (drone1)       │   Unix Socket        │                   │
+│                 │   Shared Memory      │   TFLite Model    │
+│  - Camera       │                      │   - detect.tflite │
+│  - Display      │                      │   - Inference     │
+│  - OSD          │                      │                   │
+└─────────────────┘                      └──────────────────┘
+```
 
 ---
 
@@ -110,8 +170,10 @@ Then just type `rb` in project directory to rebuild and run.
 
 | Action | Command |
 |--------|---------|
-| Build & run | `cmake -B build && cmake --build build && ./build/robot_vision` |
-| Quick rebuild | `rb` (after adding alias) |
+| Build robot_vision | `cmake -B build && cmake --build build` |
+| Run robot_vision | `./build/robot_vision` |
+| Build vision_detector | `cmake -B build -DUSE_TFLITE=ON && cmake --build build` |
+| Run vision_detector | `./build/vision_detector -m private/models/.../detect.tflite` |
 | Check tokens | `/cost` |
 | Switch to Opus | `/model opus` |
 | Pull all | `git pull --recurse-submodules` |
