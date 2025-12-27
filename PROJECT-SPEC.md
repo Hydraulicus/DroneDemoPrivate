@@ -437,25 +437,37 @@ target_link_libraries(robot_vision_demo
 - ✅ Draw basic shapes on video
 - ✅ Text rendering
 
-### Phase 4: Object Detection Integration - IN PROGRESS
+### Phase 4: Object Detection Integration ✅ COMPLETE
 **Goal**: Integrate external vision-detector service for real-time object detection
 
 **Architecture**:
 - Separate `vision-detector` service (TFLite inference)
 - IPC communication via shared memory + Unix socket
-- Shared protocol library as git submodule
+- Shared protocol library as git submodule (`detector-protocol`)
 
-**Tasks**:
-- ⬜ Add `detector-protocol` submodule (shared message definitions)
-- ⬜ Implement detection client (IPC communication)
-- ⬜ Receive detection results (bounding boxes, labels, confidence)
-- ⬜ OSD visualization of detections:
-  - ⬜ Draw bounding boxes around detected objects
-  - ⬜ Render class labels (tank, vehicle types)
-  - ⬜ Display confidence scores
-  - ⬜ Color coding per object class
-- ⬜ Handle connection/disconnection gracefully
-- ⬜ Frame counter and FPS display (✅ already implemented)
+#### Milestone 1: IPC Connection ✅ COMPLETE
+- ✅ Add `detector-protocol` submodule (shared message definitions)
+- ✅ Implement DetectionClient class (Unix socket + shared memory)
+- ✅ Handshake protocol (version negotiation, model info exchange)
+- ✅ Heartbeat protocol (connection health monitoring)
+- ✅ Auto-reconnect on connection loss (every 3 seconds)
+- ✅ SIGPIPE handling for graceful disconnection
+- ✅ OSD status indicator ("Detector: ON/OFF")
+
+#### Milestone 2: Frame Processing ✅ COMPLETE
+- ✅ Send video frames to detector via shared memory
+- ✅ Receive detection results (bounding boxes, labels, confidence)
+- ✅ Frame throttling (10 FPS to detector to prevent overload)
+- ✅ Memory barrier for shared memory synchronization
+- ✅ Message interleaving handling in heartbeat
+
+#### Milestone 3: OSD Visualization ✅ COMPLETE
+- ✅ Draw bounding boxes around detected objects
+- ✅ Render class labels (tank, vehicle types)
+- ✅ Display confidence scores
+- ✅ Color coding by confidence (green ≥70%, yellow ≥40%, red <40%)
+- ✅ Relative font sizing (% of screen height) for Retina displays
+- ✅ Inference time display
 
 **Detection Classes** (provided by vision-detector):
 - Military vehicles (tanks, APCs, artillery)
@@ -503,12 +515,12 @@ target_link_libraries(robot_vision_demo
 - ⬜ Saves frames to file on command
 - ✅ Less than 50 lines of platform-specific code
 
-### Phase 4 Success (Object Detection)
-- ⬜ Connects to vision-detector service
-- ⬜ Receives detection results in real-time
-- ⬜ Displays bounding boxes with labels on detected vehicles
-- ⬜ Handles detector disconnection gracefully
-- ⬜ Detection latency: <100ms end-to-end
+### Phase 4 Success (Object Detection) ✅ COMPLETE
+- ✅ Connects to vision-detector service
+- ✅ Receives detection results in real-time
+- ✅ Displays bounding boxes with labels on detected vehicles
+- ✅ Handles detector disconnection gracefully
+- ✅ Detection latency: ~24ms inference + IPC overhead
 
 ### Full Success
 - ⬜ All functional requirements met
