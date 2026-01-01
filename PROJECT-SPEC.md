@@ -460,6 +460,11 @@ target_link_libraries(robot_vision_demo
 - ✅ Frame throttling (10 FPS to detector to prevent overload)
 - ✅ Memory barrier for shared memory synchronization
 - ✅ Message interleaving handling in heartbeat
+- ✅ Adaptive throttling for slow edge devices:
+  - `waiting_for_detection` flag prevents sending new frames until result received
+  - 2-second timeout prevents deadlock if detector stalls/crashes
+  - Heartbeat skipped while waiting (would consume detection results)
+  - Reconnect logic only runs when disconnected (not while waiting)
 
 #### Milestone 3: OSD Visualization ✅ COMPLETE
 - ✅ Draw bounding boxes around detected objects
